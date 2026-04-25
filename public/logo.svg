@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <circle cx="100" cy="100" r="95" stroke="#c44d12" stroke-width="6" fill="#1a1210"/>
+  <text x="100" y="90" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" font-weight="900" fill="#c44d12" letter-spacing="2">BIRRIA</text>
+  <text x="100" y="125" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" font-weight="900" fill="#e8ddd4" letter-spacing="2">FUSION</text>
+  <line x1="40" y1="98" x2="160" y2="98" stroke="#c44d12" stroke-width="2"/>
+</svg>
