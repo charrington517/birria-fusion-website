@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SectionHeading from '../components/layout/SectionHeading';
 import ContactForm from '../components/contact/ContactForm';
 import CateringForm from '../components/contact/CateringForm';
 import { Mail, ChefHat, Phone, Instagram, Facebook } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { sanity } from '@/lib/sanity';
 
 export default function Contact() {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    sanity.fetch(`*[_type == "siteSettings"][0]`).then(setSettings);
+  }, []);
+
+  const email = settings?.email || 'hello@birriafusion.com';
+  const phone = settings?.phone || '(555) 123-4567';
+
   return (
     <div className="min-h-screen pt-24 pb-16">
-      {/* Hero */}
       <div className="relative h-[35vh] mb-16 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200"
@@ -28,7 +37,6 @@ export default function Contact() {
 
       <div className="px-6 md:px-[8vw]">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Contact info sidebar */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -37,11 +45,11 @@ export default function Contact() {
             <div>
               <h3 className="font-display font-bold text-sm uppercase tracking-[0.2em] text-primary mb-4">Direct Line</h3>
               <div className="space-y-3">
-                <a href="mailto:hello@birriafusion.com" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                  <Mail className="w-5 h-5" /> hello@birriafusion.com
+                <a href={`mailto:${email}`} className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                  <Mail className="w-5 h-5" /> {email}
                 </a>
-                <a href="tel:+15551234567" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                  <Phone className="w-5 h-5" /> (555) 123-4567
+                <a href={`tel:${phone.replace(/\D/g, '')}`} className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                  <Phone className="w-5 h-5" /> {phone}
                 </a>
               </div>
             </div>
@@ -49,12 +57,16 @@ export default function Contact() {
             <div>
               <h3 className="font-display font-bold text-sm uppercase tracking-[0.2em] text-primary mb-4">Follow the Smoke</h3>
               <div className="space-y-3">
-                <a href="#" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                  <Instagram className="w-5 h-5" /> @birriafusion
-                </a>
-                <a href="#" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                  <Facebook className="w-5 h-5" /> Birria Fusion
-                </a>
+                {settings?.instagram_url && (
+                  <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                    <Instagram className="w-5 h-5" /> {settings.instagram_handle || '@birriafusion'}
+                  </a>
+                )}
+                {settings?.facebook_url && (
+                  <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                    <Facebook className="w-5 h-5" /> {settings.facebook_name || 'Birria Fusion'}
+                  </a>
+                )}
               </div>
             </div>
 
@@ -66,7 +78,6 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          {/* Forms */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="contact" className="w-full">
               <TabsList className="w-full bg-secondary mb-8 p-1">

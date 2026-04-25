@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Mail, Phone } from 'lucide-react';
+import { sanity } from '@/lib/sanity';
 
 export default function Footer() {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    sanity.fetch(`*[_type == "siteSettings"][0]`).then(setSettings);
+  }, []);
+
+  const email = settings?.email || 'hello@birriafusion.com';
+  const phone = settings?.phone || '(555) 123-4567';
+
   return (
     <footer className="relative bg-background border-t border-border lg:pr-14">
       {/* Giant wordmark */}
@@ -11,9 +21,9 @@ export default function Footer() {
           <img
             src="/BirriaFusionLogo_circleonly.png"
             alt="Birria Fusion"
-            className="w-24 h-24 md:w-36 md:h-36 object-contain shrink-0 opacity-30"
+            className="w-24 h-24 md:w-36 md:h-36 object-contain shrink-0 opacity-80"
           />
-          <h2 className="font-display font-black text-[6vw] md:text-[5vw] leading-none tracking-tighter text-transparent uppercase" style={{ WebkitTextStroke: '1.5px hsl(22 93% 44% / 0.3)' }}>
+          <h2 className="font-display font-black text-[6vw] md:text-[5vw] leading-none tracking-tighter text-transparent uppercase" style={{ WebkitTextStroke: '1.5px hsl(22 93% 44% / 0.8)' }}>
             BIRRIA FUSION
           </h2>
         </div>
@@ -35,19 +45,23 @@ export default function Footer() {
           <div>
             <h3 className="font-display font-bold text-primary text-lg uppercase tracking-wider mb-3">Follow the Smoke</h3>
             <div className="flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="w-5 h-5" /></a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="w-5 h-5" /></a>
-              <a href="mailto:hello@birriafusion.com" className="text-muted-foreground hover:text-primary transition-colors"><Mail className="w-5 h-5" /></a>
+              {settings?.instagram_url && (
+                <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="w-7 h-7" /></a>
+              )}
+              {settings?.facebook_url && (
+                <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="w-7 h-7" /></a>
+              )}
+              <a href={`mailto:${email}`} className="text-muted-foreground hover:text-primary transition-colors"><Mail className="w-7 h-7" /></a>
             </div>
           </div>
           <div>
             <h3 className="font-display font-bold text-primary text-lg uppercase tracking-wider mb-3">Get in Touch</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <a href="mailto:hello@birriafusion.com" className="flex items-center gap-2 hover:text-primary transition-colors">
-                <Mail className="w-4 h-4" /> hello@birriafusion.com
+              <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Mail className="w-4 h-4" /> {email}
               </a>
-              <a href="tel:+15551234567" className="flex items-center gap-2 hover:text-primary transition-colors">
-                <Phone className="w-4 h-4" /> (555) 123-4567
+              <a href={`tel:${phone.replace(/\D/g, '')}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Phone className="w-4 h-4" /> {phone}
               </a>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Flame } from 'lucide-react';
+import { Flame, Sparkles } from 'lucide-react';
 
 export default function MenuCard({ item, onClick, index }) {
   return (
@@ -30,6 +30,12 @@ export default function MenuCard({ item, onClick, index }) {
         {item.is_popular && (
           <Badge className="absolute top-3 right-3 bg-primary/90 text-primary-foreground border-0 font-display uppercase tracking-wider text-xs">
             <Flame className="w-3 h-3 mr-1" /> Popular
+          </Badge>
+        )}
+
+        {item.status === 'Special' && !item.is_popular && (
+          <Badge className="absolute top-3 right-3 bg-accent/90 text-accent-foreground border-0 font-display uppercase tracking-wider text-xs">
+            <Sparkles className="w-3 h-3 mr-1" /> Limited Time
           </Badge>
         )}
 

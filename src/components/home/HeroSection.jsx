@@ -5,7 +5,22 @@ import { MapPin, Clock, ChevronRight, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function HeroSection({ truckLocation }) {
-  const isOpen = truckLocation?.is_open;
+  function checkIsOpen() {
+    if (!truckLocation?.hours_today) return truckLocation?.is_open || false;
+    const match = truckLocation.hours_today.match(/(\d{1,2}:\d{2})\s*(AM|PM)\s*[—–-]\s*(\d{1,2}:\d{2})\s*(AM|PM)/i);
+    if (!match) return truckLocation?.is_open || false;
+    const toMinutes = (time, period) => {
+      let [h, m] = time.split(':').map(Number);
+      if (period.toUpperCase() === 'PM' && h !== 12) h += 12;
+      if (period.toUpperCase() === 'AM' && h === 12) h = 0;
+      return h * 60 + m;
+    };
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    return nowMin >= toMinutes(match[1], match[2]) && nowMin < toMinutes(match[3], match[4]);
+  }
+
+  const isOpen = checkIsOpen();
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">

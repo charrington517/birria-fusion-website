@@ -20,8 +20,16 @@ export default function Menu() {
     });
   }, []);
 
-  const categories = ['all', ...new Set(items.map(i => i.category).filter(Boolean))];
-  const filtered = activeCategory === 'all' ? items : items.filter(i => i.category === activeCategory);
+  const currentItems = items.filter(i => i.status !== 'Past Special');
+  const pastSpecials = items.filter(i => i.status === 'Past Special');
+
+  const hasSpecials = currentItems.some(i => i.status === 'Special');
+  const categories = ['all', ...new Set(currentItems.map(i => i.category).filter(Boolean)), ...(hasSpecials ? ['specials'] : [])];
+  const filtered = activeCategory === 'all'
+    ? currentItems
+    : activeCategory === 'specials'
+      ? currentItems.filter(i => i.status === 'Special')
+      : currentItems.filter(i => i.category === activeCategory);
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -70,6 +78,22 @@ export default function Menu() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <p className="font-display text-2xl text-muted-foreground uppercase">Coming Soon</p>
           </motion.div>
+        )}
+
+        {/* Past Specials */}
+        {pastSpecials.length > 0 && (
+          <div className="mt-24">
+            <SectionHeading
+              label="The Vault"
+              title="Past Specials"
+              description="The ones that make you want to be a regular."
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 opacity-80">
+              {pastSpecials.map((item, i) => (
+                <MenuCard key={item.id} item={item} index={i} onClick={setSelectedItem} />
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
